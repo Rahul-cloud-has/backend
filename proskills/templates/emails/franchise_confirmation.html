@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Application Received</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+    <div style="background: #1a2a5e; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h2>🎓 Skill Vision Academy</h2>
+    </div>
+    <div style="background: #f8fafc; padding: 25px; border-radius: 0 0 8px 8px;">
+        <h3>✅ Application Received!</h3>
+        <p>Dear <strong>{{ name }}</strong>,</p>
+        <p>Thank you for applying for a franchise with Skill Vision Academy.</p>
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #1a2a5e; margin: 15px 0;">
+            <p><strong>Application ID:</strong> #{{ application_id }}</p>
+            <p><strong>Franchise Name:</strong> {{ franchise_name }}</p>
+            <p><strong>Status:</strong> {{ status }}</p>
+        </div>
+        <p>We will review your application within 2-3 business days.</p>
+        <p>Best Regards,<br><strong>Skill Vision Team</strong></p>
+    </div>
+</body>
+</html>

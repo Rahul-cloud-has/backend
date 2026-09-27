@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Application Update</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+    <div style="background: #dc2626; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h2>📢 Application Update</h2>
+    </div>
+    <div style="background: #f8fafc; padding: 25px; border-radius: 0 0 8px 8px;">
+        <h3>📌 Status Update</h3>
+        <p>Dear <strong>{{ name }}</strong>,</p>
+        <p>We have reviewed your franchise application.</p>
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #dc2626; margin: 15px 0;">
+            <p><strong>Application ID:</strong> #{{ application_id }}</p>
+            <p><strong>Status:</strong> ❌ Rejected</p>
+        </div>
+        {% if admin_note %}
+        <div style="background: #fee2e2; padding: 12px; border-radius: 8px; margin: 10px 0;">
+            <p><strong>Reason:</strong> {{ admin_note }}</p>
+        </div>
+        {% else %}
+        <div style="background: #fee2e2; padding: 12px; border-radius: 8px; margin: 10px 0;">
+            <p><strong>Reason:</strong> Your application does not meet our current requirements.</p>
+        </div>
+        {% endif %}
+        <p>We appreciate your interest in Skill Vision Academy.</p>
+        <p>Best Regards,<br><strong>Skill Vision Team</strong></p>
+    </div>
+</body>
+</html>
