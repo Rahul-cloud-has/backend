@@ -2327,7 +2327,7 @@ class CourseDurationDetailView(APIView):
 # ============================================
 class WebsiteCourseListCreateView(APIView):
     def get(self, request):
-        data = WebsiteCourse.objects.all()
+        data = WebsiteCourse.objects.filter(is_active=True)
         serializer = WebsiteCourseSerializer(data, many=True)
         return Response(serializer.data)
 

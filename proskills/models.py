@@ -966,6 +966,11 @@ class WebsiteCourse(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    source_course = models.OneToOneField(
+        'Course', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='website_course',
+    )
+
     class Meta:
         db_table = 'website_courses'
         ordering = ['-created_at']
