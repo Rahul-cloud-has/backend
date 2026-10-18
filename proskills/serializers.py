@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import (
+    next_franchise_code,
     User, Category, Session, Course, Job, 
     FranchisePayment, Student, Payment,
     VocationalStudent, VocationalPayment,
@@ -249,12 +250,7 @@ class FranchiseUserSerializer(serializers.ModelSerializer):
         )
         
         if not validated_data.get('franchise_code'):
-            import datetime
-            year = datetime.datetime.now().year
-            last = FranchiseUser.objects.filter(
-                franchise_code__startswith=f'FR-{year}'
-            ).count()
-            validated_data['franchise_code'] = f'FR-{year}-{str(last + 1).zfill(4)}'
+            validated_data['franchise_code'] = next_franchise_code()
         
         franchise_user = FranchiseUser.objects.create(
             user=user,
@@ -379,11 +375,7 @@ class FranchiseUserCreateSerializer(serializers.Serializer):
         password = ''.join(random.choices(chars, k=12))
         
         # Generate franchise_code
-        year = datetime.datetime.now().year
-        last = FranchiseUser.objects.filter(
-            franchise_code__startswith=f'FR-{year}'
-        ).count()
-        franchise_code = f'FR-{year}-{str(last + 1).zfill(4)}'
+        franchise_code = next_franchise_code()
         
         # Create User
         user = User.objects.create_user(

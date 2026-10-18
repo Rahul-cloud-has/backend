@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import Http404
 from django.db.models import Q, Count
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 import logging
@@ -195,11 +195,7 @@ class FranchiseUserListCreateView(APIView):
                 password = ''.join(random.choices(chars, k=12))
                 
                 # Generate Franchise Code
-                year = dt.datetime.now().year
-                last = FranchiseUser.objects.filter(
-                    franchise_code__startswith=f'FR-{year}'
-                ).count()
-                franchise_code = f'FR-{year}-{str(last + 1).zfill(4)}'
+                franchise_code = next_franchise_code()
                 
                 # Create User
                 user = User.objects.create_user(
@@ -295,6 +291,12 @@ class FranchiseUserListCreateView(APIView):
                     }
                 }, status=status.HTTP_201_CREATED)
                 
+        except IntegrityError as e:
+            logger.error(f"Integrity error creating franchise user: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': 'Could not create user because a franchise code or username already exists. Please try again.'
+            }, status=status.HTTP_409_CONFLICT)
         except Exception as e:
             print(f"❌ ERROR: {str(e)}")
             import traceback

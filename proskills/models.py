@@ -28,11 +28,7 @@ class User(AbstractUser):
 
     def generate_franchise_code(self):
         """Generate unique franchise code: FR-YYYY-XXXX"""
-        year = datetime.datetime.now().year
-        existing = User.objects.filter(
-            franchise_code__startswith=f'FR-{year}'
-        ).count()
-        return f'FR-{year}-{str(existing + 1).zfill(4)}'
+        return next_franchise_code()
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -653,11 +649,7 @@ class FranchiseUser(models.Model):
     @staticmethod
     def generate_franchise_code():
         """Generate unique franchise code: FR-YYYY-XXXX"""
-        year = datetime.datetime.now().year
-        last = FranchiseUser.objects.filter(
-            franchise_code__startswith=f'FR-{year}'
-        ).count()
-        return f'FR-{year}-{str(last + 1).zfill(4)}'
+        return next_franchise_code()
 
     def save(self, *args, **kwargs):
         if not self.franchise_code:
@@ -1304,3 +1296,24 @@ class WalletTransaction(models.Model):
             f"Count: {self.certificate_count} | "
             f"₹{self.amount}"
         )
+
+
+def next_franchise_code():
+    """Next FR-YYYY-XXXX code: highest existing numeric suffix + 1 across every
+    table that stores franchise codes, so deletions or orphan rows can never collide."""
+    year = datetime.datetime.now().year
+    prefix = f'FR-{year}-'
+    highest = 0
+    for model, field in (
+        (User, 'franchise_code'),
+        (FranchiseUser, 'franchise_code'),
+        (Franchise, 'code'),
+        (GeneratedFranchise, 'franchise_code'),
+    ):
+        for code in model.objects.filter(
+            **{f'{field}__startswith': prefix}
+        ).values_list(field, flat=True):
+            suffix = code[len(prefix):]
+            if suffix.isdigit():
+                highest = max(highest, int(suffix))
+    return f'{prefix}{str(highest + 1).zfill(4)}'
